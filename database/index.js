@@ -1,16 +1,21 @@
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/fetcher');
+const mysql = require('mysql');
 
-let repoSchema = mongoose.Schema({
-  // TODO: your schema here!
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  database: 'github'
 });
 
-let Repo = mongoose.model('Repo', repoSchema);
+connection.connect();
 
-let save = (/* TODO */) => {
-  // TODO: Your code here
-  // This function should save a repo or repos to
-  // the MongoDB
-}
+connection.query('select * from repos', (error, results, fields) => {
+  if (error) throw error;
+  results.forEach( value => {
+    console.log(value.username, value.name, value.html_url, value.stars);
+  })
+});
 
-module.exports.save = save;
+
+
+
+module.exports = connection;
