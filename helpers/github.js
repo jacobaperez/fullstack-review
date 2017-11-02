@@ -12,8 +12,6 @@ let getReposByUsername = (username) => {
     }
   }
 
-
-
   request(options, (err, res, body) => {
     if (err) {
       console.log(err);
@@ -21,9 +19,18 @@ let getReposByUsername = (username) => {
     }
     let data = JSON.parse(body);
 
-    
+    // Log into Database
+    data.forEach( index => {
+      let params = [ index.owner.login, index.name, index.html_url, index.stargazers_count];
+      db.query('INSERT INTO repos (username, name, html_url, stars) VALUES (?,?,?,?)', params, (err, results) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log("LOGGED REPO IN DB SUCCESS!");
+      })
+    })
 
-    console.log("BODY:", data.length);
   });
 }
 
